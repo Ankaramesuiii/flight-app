@@ -1,1 +1,34 @@
-<p>calendar works!</p>
+<div class="calendar-container">
+  <div class="header">
+    <button (click)="previousMonth()">&lt;</button>
+    <div class="month-year">{{ displayDate | date: 'MMMM' }} {{ year }}</div>
+    <button (click)="nextMonth()">&gt;</button>
+  </div>
+
+  <div class="weekdays">
+    <div class="weekday">Lun</div>
+    <div class="weekday">Mar</div>
+    <div class="weekday">Mer</div>
+    <div class="weekday">Jeu</div>
+    <div class="weekday">Ven</div>
+    <div class="weekday">Sam</div>
+    <div class="weekday">Dim</div>
+  </div>
+
+  <div class="days-grid">
+    @for (i of [].constructor(firstDayOfMonth); track $index) {
+      <div class="day empty"></div>
+    }
+
+    @for (day of daysInMonth; track day) {
+      <div
+        class="day"
+        [class.selected]="day === selectedDay"
+        (click)="selectDay(day)">
+        {{ day }}
+      </div>
+    } @empty {
+      <div>No days to display for this month.</div>
+    }
+  </div>
+</div>
