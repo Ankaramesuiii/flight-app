@@ -12,12 +12,12 @@ export interface FlightPage {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FlightService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getFlights(params: {
     villeDepart?: string;
@@ -26,18 +26,40 @@ export class FlightService {
     dateArrivee?: string;
     page?: number;
     size?: number;
-    sort?: string;   // ex: "prix,asc"
+    sort?: string; // ex: "prix,asc"
   }): Observable<FlightPage> {
     let httpParams = new HttpParams();
 
-    if (params.villeDepart) httpParams = httpParams.set('villeDepart', params.villeDepart);
-    if (params.villeArrivee) httpParams = httpParams.set('villeArrivee', params.villeArrivee);
-    if (params.dateDepart) httpParams = httpParams.set('dateDepart', params.dateDepart);
-    if (params.dateArrivee) httpParams = httpParams.set('dateArrivee', params.dateArrivee);
-    if (params.page !== undefined) httpParams = httpParams.set('page', params.page.toString());
-    if (params.size !== undefined) httpParams = httpParams.set('size', params.size.toString());
+    if (params.villeDepart)
+      httpParams = httpParams.set('villeDepart', params.villeDepart);
+    if (params.villeArrivee)
+      httpParams = httpParams.set('villeArrivee', params.villeArrivee);
+    if (params.dateDepart)
+      httpParams = httpParams.set('dateDepart', params.dateDepart);
+    if (params.dateArrivee)
+      httpParams = httpParams.set('dateArrivee', params.dateArrivee);
+    if (params.page !== undefined)
+      httpParams = httpParams.set('page', params.page.toString());
+    if (params.size !== undefined)
+      httpParams = httpParams.set('size', params.size.toString());
     if (params.sort) httpParams = httpParams.set('sort', params.sort);
 
-    return this.http.get<FlightPage>(`${this.apiUrl}/vols`, { params: httpParams });
+    return this.http.get<FlightPage>(`${this.apiUrl}/vols`, {
+      params: httpParams,
+    });
+  }
+
+  reserveFlight(
+    flightId: string,
+    nom: string,
+    email: string,
+    nombrePlaces: number
+  ) {
+    return this.http.post<any>(`${this.apiUrl}/reservations`, {
+      volId: flightId,
+      nom,
+      email,
+      nombrePlaces,
+    });
   }
 }

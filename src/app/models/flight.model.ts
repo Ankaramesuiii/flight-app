@@ -6,4 +6,6 @@ export interface Flight {
   villeArrivee: string;
   prix: number;
   tempsTrajet: number;
+  capacite: number;
+  placesRestantes: number;
 }

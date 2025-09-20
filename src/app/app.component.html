@@ -4,12 +4,22 @@
   <div class="search-form">
     <div class="input-group">
       <label for="departureCity">Ville de départ</label>
-      <input type="text" id="departureCity" [(ngModel)]="departureCity" placeholder="Ex: Tunis">
+      <input
+        type="text"
+        id="departureCity"
+        [(ngModel)]="departureCity"
+        placeholder="Ex: Tunis"
+      />
     </div>
 
     <div class="input-group">
       <label for="arrivalCity">Ville d'arrivée</label>
-      <input type="text" id="arrivalCity" [(ngModel)]="arrivalCity" placeholder="Ex: Paris">
+      <input
+        type="text"
+        id="arrivalCity"
+        [(ngModel)]="arrivalCity"
+        placeholder="Ex: Paris"
+      />
     </div>
 
     <div class="input-group">
@@ -26,10 +36,17 @@
       <label>Trier par</label>
       <div class="sort-options">
         <label>
-          <input type="radio" name="sortBy" value="prix" [(ngModel)]="sortBy"> Prix
+          <input type="radio" name="sortBy" value="prix" [(ngModel)]="sortBy" />
+          Prix
         </label>
         <label>
-          <input type="radio" name="sortBy" value="tempsTrajet" [(ngModel)]="sortBy"> Temps de trajet
+          <input
+            type="radio"
+            name="sortBy"
+            value="tempsTrajet"
+            [(ngModel)]="sortBy"
+          />
+          Temps de trajet
         </label>
       </div>
     </div>
@@ -38,59 +55,97 @@
   </div>
 
   @if (flights.length > 0) {
-    <h2>Résultats de la recherche</h2>
-    <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="flights" matSort>
+  <h2>Résultats de la recherche</h2>
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="flights" matSort>
+      <!-- Ville départ -->
+      <ng-container matColumnDef="villeDepart">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Ville départ</th>
+        <td mat-cell *matCellDef="let flight">{{ flight.villeDepart }}</td>
+      </ng-container>
 
-    <!-- Ville départ -->
-    <ng-container matColumnDef="villeDepart">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Ville départ </th>
-      <td mat-cell *matCellDef="let flight"> {{flight.villeDepart}} </td>
-    </ng-container>
+      <!-- Ville arrivée -->
+      <ng-container matColumnDef="villeArrivee">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Ville arrivée</th>
+        <td mat-cell *matCellDef="let flight">{{ flight.villeArrivee }}</td>
+      </ng-container>
 
-    <!-- Ville arrivée -->
-    <ng-container matColumnDef="villeArrivee">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Ville arrivée </th>
-      <td mat-cell *matCellDef="let flight"> {{flight.villeArrivee}} </td>
-    </ng-container>
+      <!-- Dates -->
+      <ng-container matColumnDef="dateDepart">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date départ</th>
+        <td mat-cell *matCellDef="let flight">
+          {{ flight.dateDepart | date : "short" }}
+        </td>
+      </ng-container>
 
-    <!-- Dates -->
-    <ng-container matColumnDef="dateDepart">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date départ </th>
-      <td mat-cell *matCellDef="let flight"> {{flight.dateDepart | date:'short'}} </td>
-    </ng-container>
+      <ng-container matColumnDef="dateArrivee">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date arrivée</th>
+        <td mat-cell *matCellDef="let flight">
+          {{ flight.dateArrivee | date : "short" }}
+        </td>
+      </ng-container>
 
-    <ng-container matColumnDef="dateArrivee">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Date arrivée </th>
-      <td mat-cell *matCellDef="let flight"> {{flight.dateArrivee | date:'short'}} </td>
-    </ng-container>
+      <!-- Prix -->
+      <ng-container matColumnDef="prix">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Prix</th>
+        <td mat-cell *matCellDef="let flight">
+          {{ flight.prix | currency : "TND" }}
+        </td>
+      </ng-container>
 
-    <!-- Prix -->
-    <ng-container matColumnDef="prix">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Prix </th>
-      <td mat-cell *matCellDef="let flight"> {{flight.prix | currency:'TND'}} </td>
-    </ng-container>
+      <!-- Temps de trajet -->
+      <ng-container matColumnDef="tempsTrajet">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Durée</th>
+        <td mat-cell *matCellDef="let flight">
+          {{ formatDuration(flight.tempsTrajet) }}
+        </td>
+      </ng-container>
 
-    <!-- Temps de trajet -->
-    <ng-container matColumnDef="tempsTrajet">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header> Durée </th>
-      <td mat-cell *matCellDef="let flight"> {{formatDuration(flight.tempsTrajet)}} </td>
-    </ng-container>
+      <!-- Capacité -->
+      <ng-container matColumnDef="capacite">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Capacité</th>
+        <td mat-cell *matCellDef="let flight">{{ flight.capacite }}</td>
+      </ng-container>
 
-    <!-- Header & Row -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+      <!-- Places restantes -->
+      <ng-container matColumnDef="placesRestantes">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          Places restantes
+        </th>
+        <td mat-cell *matCellDef="let flight">{{ flight.placesRestantes }}</td>
+      </ng-container>
 
-  <!-- Pagination -->
-  <mat-paginator [length]="totalItems"
-                 [pageSize]="pageSize"
-                 [pageIndex]="currentPage"
-                 (page)="goToPage($event.pageIndex)">
-  </mat-paginator>
-</div>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let flight">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="reserveFlight(flight)"
+            [disabled]="flight.placesRestantes === 0"
+          >
+            Réserver
+          </button>
+        </td>
+      </ng-container>
 
-  } @else if (flights.length === 0 && (departureCity || arrivalCity || departureDate || arrivalDate)) {
-    <p class="no-results">Aucun vol trouvé pour les critères de recherche.</p>
+      <!-- Header & Row -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <!-- Pagination -->
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage"
+      (page)="goToPage($event.pageIndex)"
+    >
+    </mat-paginator>
+  </div>
+
+  } @else if (flights.length === 0 && (departureCity || arrivalCity ||
+  departureDate || arrivalDate)) {
+  <p class="no-results">No flights were found.</p>
   }
 </div>

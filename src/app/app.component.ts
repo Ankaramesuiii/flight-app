@@ -29,7 +29,7 @@ export class AppComponent {
   totalPages = 0;
   totalItems = 0;
   pageSize = 5;
-  displayedColumns: string[] = ['villeDepart', 'villeArrivee', 'dateDepart', 'dateArrivee', 'prix', 'tempsTrajet'];
+  displayedColumns: string[] = ['villeDepart', 'villeArrivee', 'dateDepart', 'dateArrivee', 'prix', 'tempsTrajet','capacite','placesRestantes','action'];
 
   onDateSelected(date: string): void {
     this.selectedDate = date;
@@ -73,4 +73,26 @@ export class AppComponent {
       this.searchFlights(page);
     }
   }
+
+  reserveFlight(flight: Flight): void {
+  const nom = prompt("Entrez votre nom:");
+  const email = prompt("Entrez votre email:");
+  const nombrePlacesStr = prompt("Combien de places voulez-vous réserver?", "1");
+
+  if (!nom || !email || !nombrePlacesStr) return;
+
+  const nombrePlaces = parseInt(nombrePlacesStr, 10);
+
+  this.flightService.reserveFlight(flight.id, nom, email, nombrePlaces).subscribe({
+    next: (res) => {
+      alert("Booking done !");
+      this.searchFlights(this.currentPage); // Refresh flights
+    },
+    error: (err) => {
+      console.error("Erreur de réservation :", err);
+      alert("Booking is declined : " + (err.error?.message || "Erreur inconnue"));
+    }
+  });
+}
+
 }
